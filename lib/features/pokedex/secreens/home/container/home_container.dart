@@ -4,17 +4,24 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:pokedex/commom/error/failure.dart';
 import 'package:pokedex/commom/models/pokemon.dart';
 import 'package:pokedex/commom/repositories/pokemon_repository.dart';
-import 'package:pokedex/features/home/pages/home_error.dart';
-import 'package:pokedex/features/home/pages/home_loading.dart';
-import 'package:pokedex/features/home/pages/home_page.dart';
+import 'package:pokedex/features/pokedex/secreens/details/container/detail_container.dart';
+import 'package:pokedex/features/pokedex/secreens/home/pages/home_error.dart';
+import 'package:pokedex/features/pokedex/secreens/home/pages/home_loading.dart';
+import 'package:pokedex/features/pokedex/secreens/home/pages/home_page.dart';
 
 class HomeContainer extends StatelessWidget {
-  const HomeContainer({super.key, required this.repository});
+  const HomeContainer({
+    super.key,
+    required this.repository,
+    required this.onItemTap,
+  });
+
   final IPokemonRepository repository;
+  final Function(String, DetailArgument) onItemTap;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Pokemon>>(
-      // future: ,
+      future: repository.getAllPokemons(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return HomeLoading();
@@ -24,6 +31,7 @@ class HomeContainer extends StatelessWidget {
             snapshot.hasData) {
           return HomePage(
             list: snapshot.data!,
+            onTapItem: onItemTap,
           );
         }
 
